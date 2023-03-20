@@ -33,10 +33,10 @@ variable "tags" {
 }
 
 variable "target-group" {
-  type = string  
+  type = string
 }
 variable "app-target-group" {
-  type = string  
+  type = string
 }
 variable "private_instance_count" {
   type = list(string)

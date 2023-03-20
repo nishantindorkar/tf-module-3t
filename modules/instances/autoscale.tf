@@ -56,39 +56,39 @@ data "template_file" "mysql_user_data" {
 }
 
 resource "aws_launch_template" "web_instance_template" {
-  name_prefix = "web-instance"
-  image_id = data.aws_ami.ubuntu.id
-  instance_type = var.instance_type
-  key_name = var.key_name
+  name_prefix            = "web-instance"
+  image_id               = data.aws_ami.ubuntu.id
+  instance_type          = var.instance_type
+  key_name               = var.key_name
   vpc_security_group_ids = [var.security_group_id]
-  user_data = "${base64encode(data.template_file.nginx_user_data.rendered)}"
-  tags = merge(var.tags,{Name = format("private-%s-%s-%s-server","nginx",var.appname,var.env)})
+  user_data              = base64encode(data.template_file.nginx_user_data.rendered)
+  tags                   = merge(var.tags, { Name = format("private-%s-%s-%s-server", "nginx", var.appname, var.env) })
 }
 
 resource "aws_launch_template" "app_instance_template" {
-  name_prefix = "app-instance"
-  image_id = data.aws_ami.ubuntu.id
-  instance_type = var.instance_type
-  key_name = var.key_name
+  name_prefix            = "app-instance"
+  image_id               = data.aws_ami.ubuntu.id
+  instance_type          = var.instance_type
+  key_name               = var.key_name
   vpc_security_group_ids = [var.security_group_id]
-  user_data = "${base64encode(data.template_file.tomcat_user_data.rendered)}"
-  tags = merge(var.tags,{Name = format("private-%s-%s-%s-server","app",var.appname,var.env)})
+  user_data              = base64encode(data.template_file.tomcat_user_data.rendered)
+  tags                   = merge(var.tags, { Name = format("private-%s-%s-%s-server", "app", var.appname, var.env) })
 }
 
 resource "aws_launch_template" "data_instance_template" {
-  name_prefix = "data-instance"
-  image_id = data.aws_ami.ubuntu.id
-  instance_type = var.instance_type
-  key_name = var.key_name
+  name_prefix            = "data-instance"
+  image_id               = data.aws_ami.ubuntu.id
+  instance_type          = var.instance_type
+  key_name               = var.key_name
   vpc_security_group_ids = [var.security_group_id]
-  user_data = "${base64encode(data.template_file.mysql_user_data.rendered)}"
-  tags = merge(var.tags,{Name = format("private-%s-%s-%s-server","data",var.appname,var.env)})
+  user_data              = base64encode(data.template_file.mysql_user_data.rendered)
+  tags                   = merge(var.tags, { Name = format("private-%s-%s-%s-server", "data", var.appname, var.env) })
 }
 
 resource "aws_autoscaling_group" "private_web_autoscaling_group" {
   name = "private-web-autoscaling-group"
   launch_template {
-    id = aws_launch_template.web_instance_template.id
+    id      = aws_launch_template.web_instance_template.id
     version = "$Latest"
   }
   tag {
@@ -97,19 +97,19 @@ resource "aws_autoscaling_group" "private_web_autoscaling_group" {
     propagate_at_launch = true
   }
   vpc_zone_identifier = [var.private_subnet_ids[0], var.private_subnet_ids[1]]
-  min_size = 2
-  max_size = 2
-  desired_capacity = 2
+  min_size            = 2
+  max_size            = 2
+  desired_capacity    = 2
 }
 
 resource "aws_autoscaling_attachment" "web_lb_asg_attachment" {
   autoscaling_group_name = aws_autoscaling_group.private_web_autoscaling_group.name
-  lb_target_group_arn   = var.target-group
+  lb_target_group_arn    = var.target-group
 }
 
 resource "aws_autoscaling_group" "private_app_autoscaling_group" {
   launch_template {
-    id = aws_launch_template.app_instance_template.id
+    id      = aws_launch_template.app_instance_template.id
     version = "$Latest"
   }
   tag {
@@ -118,18 +118,18 @@ resource "aws_autoscaling_group" "private_app_autoscaling_group" {
     propagate_at_launch = true
   }
   vpc_zone_identifier = [var.private_subnet_ids[2], var.private_subnet_ids[3]]
-  min_size = 2
-  max_size = 2
-  desired_capacity = 2
+  min_size            = 2
+  max_size            = 2
+  desired_capacity    = 2
 }
 
 resource "aws_autoscaling_attachment" "app_lb_asg_attachment" {
   autoscaling_group_name = aws_autoscaling_group.private_app_autoscaling_group.name
-  lb_target_group_arn   = var.app-target-group
+  lb_target_group_arn    = var.app-target-group
 }
 resource "aws_autoscaling_group" "private_data_autoscaling_group" {
   launch_template {
-    id = aws_launch_template.data_instance_template.id
+    id      = aws_launch_template.data_instance_template.id
     version = "$Latest"
   }
   tag {
@@ -138,7 +138,7 @@ resource "aws_autoscaling_group" "private_data_autoscaling_group" {
     propagate_at_launch = true
   }
   vpc_zone_identifier = [var.private_subnet_ids[4]]
-  min_size = 1
-  max_size = 1
-  desired_capacity = 1
+  min_size            = 1
+  max_size            = 1
+  desired_capacity    = 1
 }

@@ -30,22 +30,6 @@ variable "availability_zones" {
   default = ["us-east-1a", "us-east-1b"]
 }
 variable "map_public_ip_on_launch" {
-  type = bool
+  type    = bool
   default = true
-}
-variable "appname" {
-  type = string
-  default = "web"
-}
-variable "env" {
-  type = string
-  default = "development"
-}
-variable "instance_type" {
-  type = string
-  default = "t2.micro"
-}
-variable "key_name" {
-  type = string
-  default = "allPurposeVirginia"
 }

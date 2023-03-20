@@ -37,5 +37,5 @@ variable "map_public_ip_on_launch" {
   type = bool
 }
 variable "name_prefix" {
-  type = list(string)  
+  type = list(string)
 }

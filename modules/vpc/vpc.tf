@@ -19,7 +19,7 @@ resource "aws_subnet" "private_sub" {
   vpc_id            = aws_vpc.main-vpc.id
   cidr_block        = var.private_cidr_blocks[count.index]
   availability_zone = var.availability_zones[count.index % length(var.availability_zones)]
-  tags = merge(var.tags,{Name = format("private-${var.name_prefix[floor(count.index / 2)]}-${count.index % 2 + 1}-%s-%s-server",var.appname,var.env)})
+  tags              = merge(var.tags, { Name = format("private-${var.name_prefix[floor(count.index / 2)]}-${count.index % 2 + 1}-%s-%s-server", var.appname, var.env) })
 }
 
 resource "aws_internet_gateway" "gateway" {
