@@ -2,11 +2,6 @@ variable "internal" {
   type = string
 }
 
-variable "type" {
-  type    = string
-  default = "application"
-}
-
 variable "appname" {
   type = string
 }
@@ -20,34 +15,20 @@ variable "tags" {
   default = {}
 }
 
-variable "autoscaling_group_name" {
-  type = string
-}
-
-variable "subnets" {
-  type = list(string)
-}
-
 variable "vpc_id" {
   type = string
-}
-
-variable "autoscaling_group_id" {
-  type    = list(string)
-  default = []
 }
 
 variable "security_group_id" {
   type = string
 }
-variable "vpc_public" {
+variable "public_subnet_ids" {
   type = list(string)
 }
 
-# variable "ports" {
-#   type    = map(number)
-#   default = {
-#     http  = 80
-#     #https = 443
-#   }
-# }
+variable "private_subnet_ids" {
+  type = list(string)
+}
+variable "type" {
+  type = string
+}

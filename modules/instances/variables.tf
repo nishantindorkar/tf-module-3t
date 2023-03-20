@@ -2,10 +2,6 @@ variable "instance_type" {
   type = string
 }
 
-# variable "vpc_id" {
-#   type = string
-# }
-
 variable "public_subnet_ids" {
   type = list(string)
 }
@@ -29,15 +25,6 @@ variable "appname" {
 variable "key_name" {
   type = string
 }
-
-variable "private_instance_count" {
-  #type = string
-}
-
-variable "public_instance_count" {
-  #type = string
-}
-
 variable "tags" {
   type = map(string)
   default = {
@@ -45,6 +32,16 @@ variable "tags" {
   }
 }
 
-variable "name_prefix" {
+variable "target-group" {
+  type = string  
+}
+variable "app-target-group" {
+  type = string  
+}
+variable "private_instance_count" {
+  type = list(string)
+}
+
+variable "public_instance_count" {
   type = list(string)
 }
