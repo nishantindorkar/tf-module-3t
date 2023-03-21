@@ -48,7 +48,7 @@ resource "aws_lb" "internal-lb" {
 }
 
 resource "aws_lb_listener" "internal-lb-listener" {
-  load_balancer_arn = aws_lb.lb.arn
+  load_balancer_arn = aws_lb.internal-lb.arn
   port              = 80
   protocol          = "HTTP"
   default_action {
@@ -58,7 +58,7 @@ resource "aws_lb_listener" "internal-lb-listener" {
 }
 resource "aws_lb_target_group" "internal-lb-tg" {
   name_prefix = "app-tg"
-  port        = 80
+  port        = 8080
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
 
