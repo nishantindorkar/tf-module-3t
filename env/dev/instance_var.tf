@@ -12,7 +12,7 @@ variable "instance_type" {
 }
 variable "key_name" {
   type    = string
-  default = "allPurposeVirginia"
+  default = "first-virginia-key"
 }
 variable "internal" {
   type    = bool

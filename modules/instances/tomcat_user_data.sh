@@ -1,6 +1,6 @@
 #!/bin/bash
 sudo apt update -y
-sudo apt install openjdk-11-jre-headless -y
+sudo apt-get install openjdk-11-jdk -y
 sudo apt update -y
 sudo wget https://dlcdn.apache.org/tomcat/tomcat-8/v8.5.87/bin/apache-tomcat-8.5.87.tar.gz
 sudo tar -xvzf apache-tomcat-8.5.87.tar.gz

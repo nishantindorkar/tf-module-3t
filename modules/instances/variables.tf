@@ -45,3 +45,11 @@ variable "private_instance_count" {
 variable "public_instance_count" {
   type = list(string)
 }
+
+variable "internal_lb_dns" {
+  type = string  
+}
+
+variable "nginx_lb_dns" {
+  type = string 
+}

@@ -69,6 +69,6 @@ resource "aws_lb_target_group" "internal-lb-tg" {
     healthy_threshold   = 3
     unhealthy_threshold = 3
     protocol            = "HTTP"
-    port                = 80
+    #port                = 80
   }
 }

@@ -29,6 +29,8 @@ module "instances" {
   app-target-group       = module.loadbalancer.app-target-group
   private_instance_count = module.vpc.private_cidr_blocks
   public_instance_count  = module.vpc.public_cidr_blocks
+  internal_lb_dns        = module.loadbalancer.internal_lb_dns
+  nginx_lb_dns           = module.loadbalancer.nginx_lb_dns
 }
 
 module "loadbalancer" {
@@ -44,22 +46,22 @@ module "loadbalancer" {
   private_subnet_ids = module.vpc.private_subnet_ids
 }
 
-module "rds" {
-  source             = "../../modules/rds"
-  appname            = module.vpc.appname
-  env                = module.vpc.env
-  rds_subnet_name    = var.rds_subnet_name
-  rds_storage        = var.rds_storage
-  rds_engine         = var.rds_engine
-  rds_engine_version = var.rds_engine_version
-  rds_instance_class = var.rds_instance_class
-  rds_db_name        = var.rds_db_name
-  rds_username       = var.rds_username
-  rds_password       = var.rds_password
-  rds_identifier     = var.rds_identifier
-  rds_storage_type   = var.rds_storage_type
-  skip_snapshot      = var.skip_snapshot
-  private_subnet_ids = module.vpc.private_subnet_ids
-  tags               = { Owner = "dev-rds" }
-  security_group_id  = module.vpc.security_group_id
-}
+# module "rds" {
+#   source             = "../../modules/rds"
+#   appname            = module.vpc.appname
+#   env                = module.vpc.env
+#   rds_subnet_name    = var.rds_subnet_name
+#   rds_storage        = var.rds_storage
+#   rds_engine         = var.rds_engine
+#   rds_engine_version = var.rds_engine_version
+#   rds_instance_class = var.rds_instance_class
+#   rds_db_name        = var.rds_db_name
+#   rds_username       = var.rds_username
+#   rds_password       = var.rds_password
+#   rds_identifier     = var.rds_identifier
+#   rds_storage_type   = var.rds_storage_type
+#   skip_snapshot      = var.skip_snapshot
+#   private_subnet_ids = module.vpc.private_subnet_ids
+#   tags               = { Owner = "dev-rds" }
+#   security_group_id  = module.vpc.security_group_id
+# }
