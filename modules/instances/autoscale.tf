@@ -72,17 +72,20 @@ resource "aws_launch_template" "web_instance_template" {
 #!/bin/bash
 sudo apt update -y
 sudo apt install nginx -y
-sudo sed -i '38i\
-server {\
-    listen 80;\
-    listen [::]:80;\
-    server_name _;\
-    location / {\
-        proxy_pass http://${var.internal_lb_dns}/student/;\
-    }\
-}' /etc/nginx/nginx.conf
 sudo systemctl start nginx
-sudo systemctl enable nginx            
+sudo systemctl enable nginx      
+sudo sed -i '23i\
+      server_names_hash_bucket_size 128;' /etc/nginx/nginx.conf
+sudo sed -i '38i\
+      server {\
+          listen 80;\
+          listen [::]:80;\
+          server_name ${var.nginx_lb_dns};\
+          location / {\
+              proxy_pass http://${var.internal_lb_dns}/student/;\
+          }\
+      }' /etc/nginx/nginx.conf
+sudo systemctl restart nginx
 EOF
   )
   tags = merge(var.tags, { Name = format("private-%s-%s-%s-server", "nginx", var.appname, var.env) })
