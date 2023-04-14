@@ -53,3 +53,13 @@ variable "internal_lb_dns" {
 variable "nginx_lb_dns" {
   type = string 
 }
+
+variable "rds_endpoint" {
+  type = string  
+}
+
+
+# variable "TOMCAT_VERSION" {
+#   type    = string
+#   default = local.tomcat_version
+# }

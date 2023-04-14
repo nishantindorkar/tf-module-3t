@@ -107,7 +107,12 @@ sudo wget https://dlcdn.apache.org/tomcat/tomcat-8/v8.5.87/bin/apache-tomcat-8.5
 sudo tar -xvzf apache-tomcat-8.5.87.tar.gz
 sudo wget https://s3-us-west-2.amazonaws.com/studentapi-cit/student.war -P apache-tomcat-8.5.87/webapps/
 sudo wget https://s3-us-west-2.amazonaws.com/studentapi-cit/mysql-connector.jar -P apache-tomcat-8.5.87/lib/
+sudo sed -i '21i\
+<Resource name="jdbc/TestDB" auth="Container" type="javax.sql.DataSource" maxTotal="500" maxIdle="30" maxWaitMillis="1000" username="admin" password="Admin$123" driverClassName="com.mysql.jdbc.Driver" url="jdbc:mysql://${var.rds_endpoint}:3306/studentapp?useUnicode=yes&amp;characterEncoding=utf8"/>\
+' apache-tomcat-8.5.87/conf/context.xml
+
 sudo sh apache-tomcat-8.5.87/bin/catalina.sh stop
+sleep 2
 sudo sh apache-tomcat-8.5.87/bin/catalina.sh start
 EOF
   )
@@ -119,7 +124,36 @@ resource "aws_launch_template" "data_instance_template" {
   instance_type          = var.instance_type
   key_name               = var.key_name
   vpc_security_group_ids = [var.security_group_id]
-  user_data              = base64encode(data.template_file.mysql_user_data.rendered)
+  user_data              = base64encode(<<-EOF
+#!/bin/bash
+sudo apt update -y
+sudo apt install mysql-server -y
+sudo systemctl start mysql
+sudo systemctl enable mysql
+MYSQL_USER="admin"
+MYSQL_CONFIG="config.cnf"
+
+echo "[client]
+user=$MYSQL_USER
+password=Admin\$123" > $MYSQL_CONFIG
+
+echo "CREATE TABLE IF NOT EXISTS students(
+    student_id INT NOT NULL AUTO_INCREMENT,
+    student_name VARCHAR(100) NOT NULL,
+    student_addr VARCHAR(100) NOT NULL,
+    student_age VARCHAR(3) NOT NULL,
+    student_qual VARCHAR(20) NOT NULL,
+    student_percent VARCHAR(10) NOT NULL,
+    student_year_passed VARCHAR(10) NOT NULL,
+    PRIMARY KEY (student_id)
+);" > /tmp/schema.sql
+
+mysql --defaults-file=$MYSQL_CONFIG -h ${var.rds_endpoint} --database studentapp < /tmp/schema.sql
+
+rm $MYSQL_CONFIG
+rm /tmp/schema.sql
+EOF
+  )
   tags                   = merge(var.tags, { Name = format("private-%s-%s-%s-server", "data", var.appname, var.env) })
 }
 
